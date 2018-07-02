@@ -1,21 +1,35 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+
+import { createStore, applyMiddleware } from 'redux'
+import { Provider } from 'react-redux'
+import createSagaMiddleware from 'redux-saga'
+
+import reducer from './reducers/index'
+import indexSaga from './sagas/index'
+
+import Info from './Info'
+import UserAgent from './UserAgent'
+
+const sagaMiddleware = createSagaMiddleware() 
+
+const store = createStore(
+  reducer,
+  applyMiddleware(sagaMiddleware)
+)
+
+sagaMiddleware.run(indexSaga)
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
-    );
+      <Provider store={store}>
+        <div className="App">
+          <Info />
+          <UserAgent />
+        </div>
+      </Provider>
+    )
   }
 }
 
-export default App;
+export default App
